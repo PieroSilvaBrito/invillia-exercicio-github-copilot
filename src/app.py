@@ -1,8 +1,8 @@
 """
-High School Management System API
+API do Sistema de Gerenciamento Escolar
 
-A super simple FastAPI application that allows students to view and sign up
-for extracurricular activities at Mergington High School.
+Uma aplicação super simples usando FastAPI que permite aos estudantes visualizar
+e se inscrever em atividades extracurriculares na Escola Secundária Mergington.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -11,31 +11,31 @@ from fastapi.responses import RedirectResponse
 import os
 from pathlib import Path
 
-app = FastAPI(title="Mergington High School API",
-              description="API for viewing and signing up for extracurricular activities")
+app = FastAPI(title="API da Escola Secundária Mergington",
+              description="API para visualizar e se inscrever em atividades extracurriculares")
 
-# Mount the static files directory
+# Montar o diretório de arquivos estáticos
 current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
 
-# In-memory activity database
+# Banco de dados de atividades em memória
 activities = {
     "Chess Club": {
-        "description": "Learn strategies and compete in chess tournaments",
-        "schedule": "Fridays, 3:30 PM - 5:00 PM",
+        "description": "Aprenda estratégias e participe de torneios de xadrez",
+        "schedule": "Sextas-feiras, 15:30 - 17:00",
         "max_participants": 12,
         "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
     },
     "Programming Class": {
-        "description": "Learn programming fundamentals and build software projects",
-        "schedule": "Tuesdays and Thursdays, 3:30 PM - 4:30 PM",
+        "description": "Aprenda fundamentos de programação e desenvolva projetos de software",
+        "schedule": "Terças e Quintas, 15:30 - 16:30",
         "max_participants": 20,
         "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
     },
     "Gym Class": {
-        "description": "Physical education and sports activities",
-        "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
+        "description": "Atividades de educação física e esportes",
+        "schedule": "Segundas, Quartas e Sextas, 14:00 - 15:00",
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
     }
@@ -54,14 +54,14 @@ def get_activities():
 
 @app.post("/activities/{activity_name}/signup")
 def signup_for_activity(activity_name: str, email: str):
-    """Sign up a student for an activity"""
-    # Validate activity exists
+    """Inscrever um estudante em uma atividade"""
+    # Validar se a atividade existe
     if activity_name not in activities:
-        raise HTTPException(status_code=404, detail="Activity not found")
+        raise HTTPException(status_code=404, detail="Atividade não encontrada")
 
-    # Get the specificy activity
+    # Obter a atividade específica
     activity = activities[activity_name]
 
-    # Add student
+    # Adicionar estudante
     activity["participants"].append(email)
-    return {"message": f"Signed up {email} for {activity_name}"}
+    return {"message": f"{email} foi inscrito(a) na atividade {activity_name}"}
