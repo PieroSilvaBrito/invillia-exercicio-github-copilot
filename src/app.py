@@ -21,19 +21,19 @@ app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
 
 # Banco de dados de atividades em memória
 activities = {
-    "Chess Club": {
+    "Clube de Xadrez": {
         "description": "Aprenda estratégias e participe de torneios de xadrez",
         "schedule": "Sextas-feiras, 15:30 - 17:00",
         "max_participants": 12,
         "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
     },
-    "Programming Class": {
+    "Aula de Programação": {
         "description": "Aprenda fundamentos de programação e desenvolva projetos de software",
         "schedule": "Terças e Quintas, 15:30 - 16:30",
         "max_participants": 20,
         "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
     },
-    "Gym Class": {
+    "Aula de Educação Física": {
         "description": "Atividades de educação física e esportes",
         "schedule": "Segundas, Quartas e Sextas, 14:00 - 15:00",
         "max_participants": 30,
