@@ -4,14 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  let activities = {}; // Variável para armazenar as atividades carregadas
+
   // Função para buscar atividades da API
   async function fetchActivities() {
     try {
       const response = await fetch("/activities");
-      const activities = await response.json();
+      activities = await response.json(); // Armazenar as atividades carregadas
 
       // Limpar mensagem de carregamento
       activitiesList.innerHTML = "";
+
+      // Limpar opções do combo de atividades
+      activitySelect.innerHTML = '<option value="">-- Selecione uma atividade --</option>';
 
       // Popular lista de atividades
       Object.entries(activities).forEach(([name, details]) => {
@@ -48,7 +53,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email").value;
     const activity = document.getElementById("activity").value;
 
+    // Validar se o e-mail já está cadastrado na atividade
+    if (activities[activity]?.participants.includes(email)) {
+      messageDiv.textContent = "Este e-mail já está inscrito nesta atividade.";
+      messageDiv.className = "error";
+      messageDiv.classList.remove("hidden");
+
+      // Ocultar mensagem após 5 segundos
+      setTimeout(() => {
+        messageDiv.classList.add("hidden");
+      }, 5000);
+      return;
+    }
+
     try {
+      // Enviar o e-mail como parâmetro de query string
       const response = await fetch(
         `/activities/${encodeURIComponent(activity)}/signup?email=${encodeURIComponent(email)}`,
         {
@@ -62,8 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+
+        // Atualizar a lista de atividades após a inscrição
+        await fetchActivities();
       } else {
-        messageDiv.textContent = result.detail || "Ocorreu um erro";
+        messageDiv.textContent = typeof result.detail === "string" 
+          ? result.detail 
+          : "Ocorreu um erro. Detalhes: " + JSON.stringify(result);
         messageDiv.className = "error";
       }
 
